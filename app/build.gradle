@@ -1,0 +1,48 @@
+plugins {
+    id 'com.android.application'
+}
+
+def runNumber = (System.getenv("GITHUB_RUN_NUMBER") ?: "1").toInteger()
+
+android {
+    namespace 'com.joelstanly.watertracker'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'com.joelstanly.watertracker'
+        minSdk 26
+        targetSdk 34
+        versionCode runNumber
+        versionName "1.0.${runNumber}"
+    }
+
+    // One fixed key, so every new APK installs over the old one and keeps your data.
+    signingConfigs {
+        shared {
+            storeFile file('watertracker.keystore')
+            storePassword 'watertracker'
+            keyAlias 'watertracker'
+            keyPassword 'watertracker'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.shared
+        }
+        debug {
+            signingConfig signingConfigs.shared
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}
